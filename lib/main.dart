@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:selectnumber/components/image_btn.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,6 +34,19 @@ class _SelectNumberState extends State<SelectNumber> {
   List<int> numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   int correctAnswer = 0;
   int score = 0;
+
+  Widget imageList(List<int> images) => Column(
+      children: images
+          .map((val) => ImageButton(
+              correctAnswer: correctAnswer,
+              val: val,
+              onTap: (ans) {
+                setState(() {
+                  score += ans;
+                });
+              }))
+          .toList());
+
   @override
   Widget build(BuildContext context) {
     numbers.shuffle();
@@ -48,43 +62,7 @@ class _SelectNumberState extends State<SelectNumber> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             Text("Select the number $correctAnswer"),
-            Column(
-                children: images
-                    .map((val) => InkWell(
-                          onTap: () {
-                            var message = "Your answer is wrong";
-                            var ansColors = Colors.red;
-                            if (correctAnswer == val) {
-                              message = "Your answer is correct";
-                              ansColors = Colors.green;
-                              setState(() {
-                                score += 10;
-                              });
-                            } else {
-                              setState(() {});
-                            }
-
-                            final snackBar = SnackBar(
-                              content: Text(message),
-                              duration: const Duration(seconds: 1),
-                              backgroundColor: ansColors,
-                            );
-
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackBar);
-                          }, // Handle your callback.
-                          child: Ink(
-                            height: 100,
-                            width: 100,
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage('assets/images/$val.png'),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                        ))
-                    .toList()),
+            imageList(images),
             ElevatedButton(
               onPressed: () {
                 setState(() {});
